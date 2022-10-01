@@ -50,6 +50,7 @@ main {
 	display: flex;
 	justify-content: center;
 	margin-top: auto;
+	align-items: center;
 }
 
 .img-icon {
