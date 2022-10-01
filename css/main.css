@@ -46,9 +46,8 @@ main {
 
 .box {
 	background-color: #604734;
-	max-width: 95%;
-	min-width: 95%;
-    margin-top: 10px;
-    margin-left: 10px;
+	max-width: 100%;
+	min-width: 300px;
+    margin: 5px;
     padding: 8px;
 }
