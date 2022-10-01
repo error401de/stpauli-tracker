@@ -1,11 +1,17 @@
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/Inter/Inter.ttf') format('truetype');
+}
+
 body {
-  font-family: 'Futura', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Inter', 'Futura', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   min-height: 100%;
   height: auto;
   margin: 0;
   padding: 0;
   color: #000;
   font-size: 0.94em;
+  font-weight: 400;
 }
 
 main {
@@ -52,7 +58,7 @@ td {
 }
 
 .bold {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .outer-wrapper {
@@ -88,11 +94,12 @@ td {
 }
 
 .box > h1 {
-  font-weight: 800;
+  font-weight: 900;
   margin-bottom: 32px;
 }
 
 .box > h2 {
+  font-weight: 700;
   max-width: 320px;
 }
 
@@ -126,7 +133,7 @@ td {
 .stpauli-highlight {
   background-color: #ec1b24;
   border: none;
-  font-weight: 600;
+  font-weight: 700;
   color: #fff;
 }
 
