@@ -1,2 +1,9 @@
 # stpauli-tracker
-Simple overview of FC St. Pauli's statistics
+The big soccer websites are way too overloaded, if you only follow one team. This is a simple overview of FC St. Pauli's statistics.
+
+## Live demo
+https://stpauli.error401.de/
+
+## Contribution
+This project is made to support new-starters at Hacktoberfest! Feel free to contribute by implementing tasks listed at `Issues` with `to-do` flag. Please add a comment first, I will assign the task to you.
+You have an idea for a new feature? Please share it with `Enhancement` label
