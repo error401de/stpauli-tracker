@@ -83,7 +83,6 @@ function printTable(data) {
 		if (data[key]['ShortName'] === 'St. Pauli'){
 			newRow.classList.add('stpauli-highlight')		
 		}
-		
 		newCellPosition.appendChild(textPosition)
 		newCellLogo.appendChild(textLogo)
 		newCellTeam.appendChild(textTeam)
