@@ -4,14 +4,8 @@ body {
     height: auto;
     margin: 0;
     padding: 0;
-}
-
-h1 {
-	color: white;
-}
-
-p {
-	color: white;
+    color: white;
+    font-size: 0.94em;
 }
 
 main {
@@ -50,4 +44,9 @@ main {
 	min-width: 300px;
     margin: 5px;
     padding: 8px;
+}
+
+.img-icon {
+	width: 20px;
+ 	height: auto;
 }
