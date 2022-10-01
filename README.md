@@ -7,3 +7,6 @@ https://stpauli.error401.de/
 ## Contribution
 This project is made to support new-starters at Hacktoberfest! Feel free to contribute by working on tasks listed at `Issues` with `to-do` or `bug` flag. Please add a comment first, I will assign the task to you.
 You have an idea for a new feature? Please share it with `Enhancement` label
+
+## Data source
+Thanks a lot to the community of [OpenLigaDB](https://github.com/OpenLigaDB/OpenLigaDB-Samples) for providing the required data!
