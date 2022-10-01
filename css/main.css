@@ -66,3 +66,11 @@ main {
 	display: flex;
 	justify-content: center;
 }
+
+#github {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	padding-right: 3px;
+	padding-bottom: 3px;
+}
