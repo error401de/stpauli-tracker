@@ -11,7 +11,7 @@ body {
 main {
   display: flex;
   justify-content: center;
-  padding: 10px 20px;
+  padding: 10px;
   width: calc(100% - 40px);
   margin: auto;
   flex-wrap: wrap;
@@ -71,7 +71,7 @@ td {
   flex-wrap: wrap;
   justify-content: center;
   min-height: calc(100% - 60px);
-  padding: 20px 40px 40px;
+  padding: 20px 10px 40px;
   width: calc(100% - 80px);
   display: flex;
   margin-top: 90px;
@@ -80,8 +80,8 @@ td {
 .box {
   background-color: #f1f1f1;
   max-width: 100%;
-  min-width: 300px;
-  margin: 16px;
+  min-width: 320px;
+  margin: 16px 24px 48px 24px;
   padding: 24px;
   text-align: center;
   border-radius: 20px;
@@ -89,6 +89,11 @@ td {
 
 .box > h1 {
   font-weight: 800;
+  margin-bottom: 32px;
+}
+
+.box > h2 {
+  max-width: 320px;
 }
 
 .team-labels {
@@ -103,7 +108,7 @@ td {
 }
 
 .img-icon-big {
-  width: 50px;
+  width: 75px;
   height: auto;
   margin: 5px;
 }
@@ -128,7 +133,7 @@ td {
 #github {
   position: absolute;
   bottom: 0;
-  right: 0;
-  padding-right: 3px;
-  padding-bottom: 3px;
+  margin-bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
 }
