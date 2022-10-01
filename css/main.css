@@ -17,6 +17,33 @@ main {
   flex-wrap: wrap;
 }
 
+.header {
+  display: flex;
+  width: 100%;
+  position: fixed;
+  top: 0;
+}
+
+.header > img {
+  margin-top: 15px;
+  width: 90px;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.header-left {
+  background-color: #ec1b24;
+  height: 120px;
+  width: 100%;
+}
+
+.header-right {
+  background-color: #604734;
+  height: 120px;
+  width: 100%;
+}
+
 table {
   border-collapse: collapse;
 }
@@ -55,10 +82,10 @@ td {
 }
 
 .team-labels {
-	display: flex;
-	justify-content: center;
-	margin-top: auto;
-	align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  align-items: center;
 }
 
 .img-icon {
