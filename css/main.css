@@ -17,6 +17,14 @@ main {
   flex-wrap: wrap;
 }
 
+table {
+  border-collapse: collapse;
+}
+
+td {
+  padding: 2px;
+}
+
 .outer-wrapper {
   position: absolute;
   top: 0;
@@ -68,15 +76,15 @@ main {
   justify-content: center;
 }
 
+.stpauli-highlight {
+  background-color: #ec1b24;
+  border: none;
+}
+
 #github {
   position: absolute;
   bottom: 0;
   right: 0;
   padding-right: 3px;
   padding-bottom: 3px;
-}
-
-.stpauli-highlight {
-  background-color: #ec1b24;
-  border: none;
 }
