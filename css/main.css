@@ -1,0 +1,54 @@
+body {
+	font-family: "Futura","Helvetica Neue",Helvetica,Arial,sans-serif;
+	min-height: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+	color: white;
+}
+
+p {
+	color: white;
+}
+
+main {
+	display: flex;
+    justify-content: center;
+    padding: 10px 20px;
+    width: calc(100% - 40px);
+    margin: auto;
+    flex-wrap: wrap;
+}
+
+.outer-wrapper {
+	position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.inner-wrapper {
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+    min-height: calc(100% - 60px);
+    padding: 20px 40px 40px;
+    width: calc(100% - 80px);
+    display: flex;
+}
+
+.box {
+	background-color: #604734;
+	max-width: 100%;
+	min-width: 400px;
+    margin-top: 10px;
+    margin-left: 10px;
+    padding: 8px;
+}
