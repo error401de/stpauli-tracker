@@ -80,6 +80,10 @@ function printTable(data) {
 		let textGoalDiff = document.createTextNode(data[key]['GoalDiff']);
 		let textPoints = document.createTextNode(data[key]['Points']);
 
+		if (data[key]['ShortName'] === 'St. Pauli'){
+			newRow.classList.add('stpauli-highlight')		
+		}
+		
 		newCellPosition.appendChild(textPosition)
 		newCellLogo.appendChild(textLogo)
 		newCellTeam.appendChild(textTeam)
