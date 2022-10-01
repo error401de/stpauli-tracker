@@ -46,7 +46,23 @@ main {
     padding: 8px;
 }
 
+.team-labels {
+	display: flex;
+	justify-content: center;
+	margin-top: auto;
+}
+
 .img-icon {
 	width: 20px;
  	height: auto;
+}
+
+.img-icon-big {
+	width: 50px;
+ 	height: auto;
+}
+
+.date {
+	display: flex;
+	justify-content: center;
 }
