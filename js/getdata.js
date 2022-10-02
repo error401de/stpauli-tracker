@@ -6,17 +6,19 @@ async function callApi(url) {
 	return data;
 }
 
-function getDfbPokalId(data) {
+function triggerDfbPokal(data) {
 	dfbPokalId = data[0]['LeagueId'];
-	callApi('https://www.openligadb.de/api/getnextmatchbyleagueteam/' + dfbPokalId + '/98').then(data => printDfbPokal(data))
+	callApi('https://www.openligadb.de/api/getnextmatchbyleagueteam/' + dfbPokalId + '/98').then(data => printDfbPokalNext(data))
+	callApi('https://www.openligadb.de/api/getlastmatchbyleagueteam/' + dfbPokalId + '/98').then(data => printDfbPokalLast(data))
 }
 
-function getBl2Id(data) {
+function triggerBl2(data) {
 	bl2Id = data[0]['LeagueId'];
-	callApi('https://www.openligadb.de/api/getnextmatchbyleagueteam/' + bl2Id + '/98').then(data => printBl2(data))
+	callApi('https://www.openligadb.de/api/getnextmatchbyleagueteam/' + bl2Id + '/98').then(data => printBl2Next(data))
+	callApi('https://www.openligadb.de/api/getlastmatchbyleagueteam/' + bl2Id + '/98').then(data => printBl2Last(data))
 }
 
-function printDfbPokal(data) {
+function printDfbPokalNext(data) {
 	let textDfbNextGame = document.getElementById('dfbNextGame');
 	let textDfbNextGameMatchday = document.getElementById('dfbNextGameMatchday');
 	let textDfbNextGameTeam1 = document.getElementById('dfbNextGameTeam1');
@@ -36,7 +38,51 @@ function printDfbPokal(data) {
 	textDfbNextGameTeam2.innerHTML = data['Team2']['ShortName'];
 }
 
-function printBl2(data) {
+function printDfbPokalLast(data) {
+	let textDfbLastGame = document.getElementById('dfbLastGame');
+	let textDfbLastGameMatchday = document.getElementById('dfbLastGameMatchday');
+	let textDfbLastGameTeam1 = document.getElementById('dfbLastGameTeam1');
+	let textDfbLastGameTeam2 = document.getElementById('dfbLastGameTeam2');
+	let textDfbLastGamePoints = document.getElementById('dfbLastGamePoints');
+
+	let textDfbLastGameIconTeam1 = document.getElementById('dfbLastGameIconTeam1')
+	textDfbLastGameIconTeam1.src = data['Team1']['TeamIconUrl'];
+	textDfbLastGameIconTeam1.setAttribute("class", "img-icon-big");
+
+	let textDfbLastGameIconTeam2 = document.getElementById('dfbLastGameIconTeam2')
+	textDfbLastGameIconTeam2.src = data['Team2']['TeamIconUrl'];
+	textDfbLastGameIconTeam2.setAttribute("class", "img-icon-big");
+	
+	textDfbLastGame.innerHTML = data['LeagueName'];
+	textDfbLastGameMatchday.innerHTML = data['Group']['GroupName'] + ' - ' + new Date(data['MatchDateTime']).toLocaleString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', });
+	textDfbLastGameTeam1.innerHTML = data['Team1']['ShortName'];
+	textDfbLastGameTeam2.innerHTML = data['Team2']['ShortName'];
+	textDfbLastGamePoints.innerHTML = data['MatchResults'][0]['PointsTeam1'] + ' - ' + data['MatchResults'][0]['PointsTeam2'];
+}
+
+function printBl2Last(data) {
+	let textBl2LastGame = document.getElementById('bl2LastGame');
+	let textBl2LastGameMatchday = document.getElementById('bl2LastGameMatchday');
+	let textBl2LastGameTeam1 = document.getElementById('bl2LastGameTeam1');
+	let textBl2LastGameTeam2 = document.getElementById('bl2LastGameTeam2');
+	let textBl2LastGamePoints = document.getElementById('bl2LastGamePoints');
+
+	let textBl2LastGameIconTeam1 = document.getElementById('bl2LastGameIconTeam1')
+	textBl2LastGameIconTeam1.src = data['Team1']['TeamIconUrl'];
+	textBl2LastGameIconTeam1.setAttribute("class", "img-icon-big");
+
+	let textBl2LastGameIconTeam2 = document.getElementById('bl2LastGameIconTeam2')
+	textBl2LastGameIconTeam2.src = data['Team2']['TeamIconUrl'];
+	textBl2LastGameIconTeam2.setAttribute("class", "img-icon-big");
+	
+	textBl2LastGame.innerHTML = data['LeagueName'];
+	textBl2LastGameMatchday.innerHTML = data['Group']['GroupName'] + ' - ' + new Date(data['MatchDateTime']).toLocaleString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', });
+	textBl2LastGameTeam1.innerHTML = data['Team1']['ShortName'];
+	textBl2LastGameTeam2.innerHTML = data['Team2']['ShortName'];
+	textBl2LastGamePoints.innerHTML = data['MatchResults'][0]['PointsTeam1'] + ' - ' + data['MatchResults'][0]['PointsTeam2'];
+}
+
+function printBl2Next(data) {
 	let textBl2NextGame = document.getElementById('bl2NextGame');
 	let textBl2NextGameMatchday = document.getElementById('bl2NextGameMatchday');
 	let textBl2NextGameTeam1 = document.getElementById('bl2NextGameTeam1');
@@ -98,5 +144,5 @@ function printTable(data) {
 
 
 callApi('https://www.openligadb.de/api/getbltable/bl2/' + currentYear).then(data => printTable(data));
-callApi('https://www.openligadb.de/api/getmatchdata/dfb' + currentYear).then(data => getDfbPokalId(data));
-callApi('https://www.openligadb.de/api/getmatchdata/bl2').then(data => getBl2Id(data));
+callApi('https://www.openligadb.de/api/getmatchdata/dfb' + currentYear).then(data => triggerDfbPokal(data));
+callApi('https://www.openligadb.de/api/getmatchdata/bl2').then(data => triggerBl2(data));
