@@ -1,20 +1,52 @@
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/Inter/Inter.ttf') format('truetype');
+}
+
 body {
-  font-family: 'Futura', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Inter', 'Futura', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   min-height: 100%;
   height: auto;
   margin: 0;
   padding: 0;
-  color: white;
+  color: #000;
   font-size: 0.94em;
+  font-weight: 400;
 }
 
 main {
   display: flex;
   justify-content: center;
-  padding: 10px 20px;
+  padding: 10px;
   width: calc(100% - 40px);
   margin: auto;
   flex-wrap: wrap;
+}
+
+.header {
+  display: flex;
+  width: 100%;
+  position: fixed;
+  top: 0;
+}
+
+.header > img {
+  width: 90px;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.header-left {
+  background-color: #ec1b24;
+  height: 90px;
+  width: 100%;
+}
+
+.header-right {
+  background-color: #604734;
+  height: 90px;
+  width: 100%;
 }
 
 table {
@@ -22,7 +54,11 @@ table {
 }
 
 td {
-  padding: 2px;
+  padding: 4px;
+}
+
+.bold {
+  font-weight: 700;
 }
 
 .outer-wrapper {
@@ -41,24 +77,36 @@ td {
   flex-wrap: wrap;
   justify-content: center;
   min-height: calc(100% - 60px);
-  padding: 20px 40px 40px;
+  padding: 20px 10px 40px;
   width: calc(100% - 80px);
   display: flex;
+  margin-top: 90px;
 }
 
 .box {
-  background-color: #604734;
+  background-color: #f1f1f1;
   max-width: 100%;
-  min-width: 300px;
-  margin: 5px;
-  padding: 8px;
+  min-width: 320px;
+  margin: 16px 24px 48px 24px;
+  padding: 24px;
+  text-align: center;
+  border-radius: 20px;
+}
+
+.box > h1 {
+  font-weight: 900;
+  margin-bottom: 32px;
+}
+
+.box > h2 {
+  font-weight: 700;
+  max-width: 320px;
 }
 
 .team-labels {
-	display: flex;
-	justify-content: center;
-	margin-top: auto;
-	align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .img-icon {
@@ -67,24 +115,32 @@ td {
 }
 
 .img-icon-big {
-  width: 50px;
+  width: 75px;
   height: auto;
+  margin: 5px;
 }
 
 .date {
+  margin-top: -10px;
   display: flex;
   justify-content: center;
+}
+
+#bl2NextGameMatchday {
+  margin-bottom: 48px;
 }
 
 .stpauli-highlight {
   background-color: #ec1b24;
   border: none;
+  font-weight: 700;
+  color: #fff;
 }
 
 #github {
   position: absolute;
   bottom: 0;
-  right: 0;
-  padding-right: 3px;
-  padding-bottom: 3px;
+  margin-bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
 }
