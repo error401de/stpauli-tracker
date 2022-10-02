@@ -6,6 +6,8 @@ async function callApi(url) {
 	return data;
 }
 
+
+
 function triggerDfbPokal(data) {
 	dfbPokalId = data[0]['LeagueId'];
 	callApi('https://www.openligadb.de/api/getnextmatchbyleagueteam/' + dfbPokalId + '/98').then(data => printDfbPokalNext(data))
@@ -43,7 +45,7 @@ function printDfbPokalLast(data) {
 	let textDfbLastGameMatchday = document.getElementById('dfbLastGameMatchday');
 	let textDfbLastGameTeam1 = document.getElementById('dfbLastGameTeam1');
 	let textDfbLastGameTeam2 = document.getElementById('dfbLastGameTeam2');
-	let textDfbLastGamePoints = document.getElementById('dfbLastGamePoints');
+	let textDfbLastGamePoints = document.getElementById('dfbLastGamePoints');  //
 
 	let textDfbLastGameIconTeam1 = document.getElementById('dfbLastGameIconTeam1')
 	textDfbLastGameIconTeam1.src = data['Team1']['TeamIconUrl'];
@@ -57,7 +59,25 @@ function printDfbPokalLast(data) {
 	textDfbLastGameMatchday.innerHTML = data['Group']['GroupName'] + ' - ' + new Date(data['MatchDateTime']).toLocaleString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', });
 	textDfbLastGameTeam1.innerHTML = data['Team1']['ShortName'];
 	textDfbLastGameTeam2.innerHTML = data['Team2']['ShortName'];
-	textDfbLastGamePoints.innerHTML = data['MatchResults'][0]['PointsTeam1'] + ' - ' + data['MatchResults'][0]['PointsTeam2'];
+	if(data['MatchResults'][0]['PointsTeam2']> data['MatchResults'][0]['PointsTeam1'])
+	{
+		//win
+		textDfbLastGamePoints.classList.add("win");
+		textDfbLastGamePoints.innerHTML = data['MatchResults'][0]['PointsTeam1'] + ' - ' + data['MatchResults'][0]['PointsTeam2']; //
+
+	}
+	else if(data['MatchResults'][0]['PointsTeam2']< data['MatchResults'][0]['PointsTeam1'])
+	{
+		//loss
+		textDfbLastGamePoints.classList.add("loss");
+		textDfbLastGamePoints.innerHTML = data['MatchResults'][0]['PointsTeam1'] + ' - ' + data['MatchResults'][0]['PointsTeam2'];
+	}
+	else
+	{
+		//draw
+		textDfbLastGamePoints.classList.add("draw");
+		textDfbLastGamePoints.innerHTML = data['MatchResults'][0]['PointsTeam1'] + ' - ' + data['MatchResults'][0]['PointsTeam2'];
+	}
 }
 
 function printBl2Last(data) {
@@ -65,7 +85,7 @@ function printBl2Last(data) {
 	let textBl2LastGameMatchday = document.getElementById('bl2LastGameMatchday');
 	let textBl2LastGameTeam1 = document.getElementById('bl2LastGameTeam1');
 	let textBl2LastGameTeam2 = document.getElementById('bl2LastGameTeam2');
-	let textBl2LastGamePoints = document.getElementById('bl2LastGamePoints');
+	let textBl2LastGamePoints = document.getElementById('bl2LastGamePoints'); //
 
 	let textBl2LastGameIconTeam1 = document.getElementById('bl2LastGameIconTeam1')
 	textBl2LastGameIconTeam1.src = data['Team1']['TeamIconUrl'];
@@ -79,7 +99,27 @@ function printBl2Last(data) {
 	textBl2LastGameMatchday.innerHTML = data['Group']['GroupName'] + ' - ' + new Date(data['MatchDateTime']).toLocaleString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', });
 	textBl2LastGameTeam1.innerHTML = data['Team1']['ShortName'];
 	textBl2LastGameTeam2.innerHTML = data['Team2']['ShortName'];
-	textBl2LastGamePoints.innerHTML = data['MatchResults'][0]['PointsTeam1'] + ' - ' + data['MatchResults'][0]['PointsTeam2'];
+
+	if(data['MatchResults'][0]['PointsTeam1']> data['MatchResults'][0]['PointsTeam2'])
+	{
+		//win
+		textBl2LastGamePoints.classList.add("win");
+		textBl2LastGamePoints.innerHTML = data['MatchResults'][0]['PointsTeam1'] + ' - ' + data['MatchResults'][0]['PointsTeam2']; 
+
+	}
+	else if(data['MatchResults'][0]['PointsTeam1']< data['MatchResults'][0]['PointsTeam2'])
+	{
+		//loss
+		textBl2LastGamePoints.classList.add("loss");
+		textBl2LastGamePoints.innerHTML = data['MatchResults'][0]['PointsTeam1'] + ' - ' + data['MatchResults'][0]['PointsTeam2'];
+	}
+	else
+	{
+		//draw
+		textBl2LastGamePoints.classList.add("draw");
+		textBl2LastGamePoints.innerHTML = data['MatchResults'][0]['PointsTeam1'] + ' - ' + data['MatchResults'][0]['PointsTeam2'];
+	}
+	textBl2LastGamePoints.innerHTML = data['MatchResults'][0]['PointsTeam1'] + ' - ' + data['MatchResults'][0]['PointsTeam2']; 
 }
 
 function printBl2Next(data) {

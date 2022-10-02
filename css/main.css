@@ -149,12 +149,28 @@ td {
   transform: translateX(-50%);
 }
 
-.endscores{
-  color: white;
-  padding: 8px;
-  background-color: red;
-  display: inline;
-  box-shadow: 1px 0 20px 0px rgba(0, 0, 0, 0.2);
-    
-    transition:transform 0.5s ;
+.win{
+	color: white;
+	padding: 8px;
+	background-color: green;
+	display: inline;
+	box-shadow: 1px 0 20px 0px rgba(0, 0, 0, 0.2);
+	  
+	  
+}
+
+.loss{
+	color: white;
+	padding: 8px;
+	background-color: red;
+	display: inline;
+	box-shadow: 1px 0 20px 0px rgba(0, 0, 0, 0.2);
+}
+
+.draw{
+	color: black;
+	padding: 8px;
+	background-color: yellow;
+	display: inline;
+	box-shadow: 1px 0 20px 0px rgba(0, 0, 0, 0.2);
 }
