@@ -79,7 +79,7 @@ td {
   flex-wrap: wrap;
   justify-content: center;
   min-height: calc(100% - 60px);
-  padding: 12px 10px 40px;
+  padding: 12px 10px 64px;
   width: calc(100% - 80px);
   display: flex;
   margin-top: 90px;
