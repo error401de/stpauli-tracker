@@ -148,3 +148,13 @@ td {
   left: 50%;
   transform: translateX(-50%);
 }
+
+.endscores{
+  color: white;
+  padding: 8px;
+  background-color: red;
+  display: inline;
+  box-shadow: 1px 0 20px 0px rgba(0, 0, 0, 0.2);
+    
+    transition:transform 0.5s ;
+}
