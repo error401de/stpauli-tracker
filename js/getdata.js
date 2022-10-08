@@ -57,7 +57,12 @@ function printDfbPokalLast(data) {
 	textDfbLastGameMatchday.innerHTML = data['Group']['GroupName'] + ' - ' + new Date(data['MatchDateTime']).toLocaleString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', });
 	textDfbLastGameTeam1.innerHTML = data['Team1']['ShortName'];
 	textDfbLastGameTeam2.innerHTML = data['Team2']['ShortName'];
-	textDfbLastGamePoints.innerHTML = data['MatchResults'][0]['PointsTeam1'] + ' - ' + data['MatchResults'][0]['PointsTeam2'];
+
+	if (data['MatchIsFinished'] === true) {
+		textDfbLastGamePoints.innerHTML = data['MatchResults'][0]['PointsTeam1'] + ' - ' + data['MatchResults'][0]['PointsTeam2'];
+	} else {
+		textDfbLastGamePoints.innerHTML = 'Spielstand noch nicht verfügbar'
+	}
 }
 
 function printBl2Last(data) {
@@ -79,7 +84,12 @@ function printBl2Last(data) {
 	textBl2LastGameMatchday.innerHTML = data['Group']['GroupName'] + ' - ' + new Date(data['MatchDateTime']).toLocaleString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', });
 	textBl2LastGameTeam1.innerHTML = data['Team1']['ShortName'];
 	textBl2LastGameTeam2.innerHTML = data['Team2']['ShortName'];
-	textBl2LastGamePoints.innerHTML = data['MatchResults'][0]['PointsTeam1'] + ' - ' + data['MatchResults'][0]['PointsTeam2'];
+	
+	if (data['MatchIsFinished'] === true) {
+		textBl2LastGamePoints.innerHTML = data['MatchResults'][0]['PointsTeam1'] + ' - ' + data['MatchResults'][0]['PointsTeam2'];
+	} else {
+		textBl2LastGamePoints.innerHTML = 'Spielstand noch nicht verfügbar'
+	}
 }
 
 function printBl2Next(data) {
