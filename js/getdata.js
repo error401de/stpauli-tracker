@@ -81,7 +81,7 @@ function printBl2Last(data) {
 	textBl2LastGameIconTeam2.setAttribute("class", "img-icon-big");
 	
 	textBl2LastGame.innerHTML = data['LeagueName'];
-	textBl2LastGameMatchday.innerHTML = data['Group']['GroupName'] + ' - ' + new Date(data['MatchDateTime']).toLocaleString('de-DE', { weekday: 'long', weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', });
+	textBl2LastGameMatchday.innerHTML = data['Group']['GroupName'] + ' - ' + new Date(data['MatchDateTime']).toLocaleString('de-DE', { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', });
 	textBl2LastGameTeam1.innerHTML = data['Team1']['ShortName'];
 	textBl2LastGameTeam2.innerHTML = data['Team2']['ShortName'];
 	
