@@ -33,7 +33,7 @@ function printDfbPokalNext(data) {
 	textDfbNextGameIconTeam2.setAttribute("class", "img-icon-big");
 	
 	textDfbNextGame.innerHTML = data['LeagueName'];
-	textDfbNextGameMatchday.innerHTML = data['Group']['GroupName'] + ' - ' + new Date(data['MatchDateTime']).toLocaleString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', });
+	textDfbNextGameMatchday.innerHTML = data['Group']['GroupName'] + ' - ' + new Date(data['MatchDateTime']).toLocaleString('de-DE', { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', });
 	textDfbNextGameTeam1.innerHTML = data['Team1']['ShortName'];
 	textDfbNextGameTeam2.innerHTML = data['Team2']['ShortName'];
 }
@@ -54,7 +54,7 @@ function printDfbPokalLast(data) {
 	textDfbLastGameIconTeam2.setAttribute("class", "img-icon-big");
 	
 	textDfbLastGame.innerHTML = data['LeagueName'];
-	textDfbLastGameMatchday.innerHTML = data['Group']['GroupName'] + ' - ' + new Date(data['MatchDateTime']).toLocaleString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', });
+	textDfbLastGameMatchday.innerHTML = data['Group']['GroupName'] + ' - ' + new Date(data['MatchDateTime']).toLocaleString('de-DE', { weekday: 'long',  year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', });
 	textDfbLastGameTeam1.innerHTML = data['Team1']['ShortName'];
 	textDfbLastGameTeam2.innerHTML = data['Team2']['ShortName'];
 
@@ -81,7 +81,7 @@ function printBl2Last(data) {
 	textBl2LastGameIconTeam2.setAttribute("class", "img-icon-big");
 	
 	textBl2LastGame.innerHTML = data['LeagueName'];
-	textBl2LastGameMatchday.innerHTML = data['Group']['GroupName'] + ' - ' + new Date(data['MatchDateTime']).toLocaleString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', });
+	textBl2LastGameMatchday.innerHTML = data['Group']['GroupName'] + ' - ' + new Date(data['MatchDateTime']).toLocaleString('de-DE', { weekday: 'long', weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', });
 	textBl2LastGameTeam1.innerHTML = data['Team1']['ShortName'];
 	textBl2LastGameTeam2.innerHTML = data['Team2']['ShortName'];
 	
@@ -107,7 +107,7 @@ function printBl2Next(data) {
 	textBl2NextGameIconTeam2.setAttribute("class", "img-icon-big");
 	
 	textBl2NextGame.innerHTML = data['LeagueName'];
-	textBl2NextGameMatchday.innerHTML = data['Group']['GroupName'] + ' - ' + new Date(data['MatchDateTime']).toLocaleString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', });
+	textBl2NextGameMatchday.innerHTML = data['Group']['GroupName'] + ' - ' + new Date(data['MatchDateTime']).toLocaleString('de-DE', { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', });
 	textBl2NextGameTeam1.innerHTML = data['Team1']['ShortName'];
 	textBl2NextGameTeam2.innerHTML = data['Team2']['ShortName'];
 }
