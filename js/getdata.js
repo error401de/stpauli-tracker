@@ -59,7 +59,7 @@ function printLastGame(data, league) {
 	textLastGameTeam2.innerHTML = data['Team2']['ShortName'];
 
 	if (data['MatchIsFinished'] === true) {
-		textLastGamePoints.innerHTML = data['MatchResults'][0]['PointsTeam1'] + ' - ' + data['MatchResults'][0]['PointsTeam2'];
+		textLastGamePoints.innerHTML = data['MatchResults'][0]['PointsTeam1'] + ' - ' + data['MatchResults'][0]['PointsTeam2'] + " (" + data['MatchResults'][1]['PointsTeam1'] + " - " + data['MatchResults'][1]['PointsTeam2'] + ")";
 	} else {
 		textLastGamePoints.innerHTML = 'Spielstand noch nicht verfügbar'
 	}
