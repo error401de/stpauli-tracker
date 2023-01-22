@@ -1,4 +1,14 @@
-const currentYear = new Date().getFullYear()
+function getSeason() {
+	let helper = 0;
+	let currentYear = new Date().getFullYear();
+	let currentMonth = new Date().getMonth()
+
+	if (currentMonth < 6) {
+		currentYear--
+	}
+
+	return currentYear
+}
 
 async function callApi(url) {
 	let response = await fetch(url);
@@ -106,6 +116,6 @@ function printTable(data) {
 }
 
 
-callApi('https://www.openligadb.de/api/getbltable/bl2/' + currentYear).then(data => printTable(data));
-callApi('https://www.openligadb.de/api/getmatchdata/dfb' + currentYear).then(data => triggerDfbPokal(data));
+callApi('https://www.openligadb.de/api/getbltable/bl2/' + getSeason()).then(data => printTable(data));
+callApi('https://www.openligadb.de/api/getmatchdata/dfb' + getSeason()).then(data => triggerDfbPokal(data));
 callApi('https://www.openligadb.de/api/getmatchdata/bl2').then(data => triggerBl2(data));
