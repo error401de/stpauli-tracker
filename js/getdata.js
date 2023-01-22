@@ -1,5 +1,4 @@
 function getSeason() {
-	let helper = 0;
 	let currentYear = new Date().getFullYear();
 	let currentMonth = new Date().getMonth()
 
