@@ -3,6 +3,22 @@
   src: url('../fonts/Inter/Inter.ttf') format('truetype');
 }
 
+a:link {
+  color: black;
+}
+
+a:visited {
+  color: black;
+}
+
+a:hover {
+  color: black;
+}
+
+a:active {
+  color: black;
+}
+
 body {
   font-family: 'Inter', 'Futura', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   min-height: 100%;

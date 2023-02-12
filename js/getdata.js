@@ -1,3 +1,7 @@
+let nextMatchdayBl2 = "";
+let nextMatchdayDfb = "";
+let upcomingMetchdaysBl2 = [];
+
 function getSeason() {
 	let currentYear = new Date().getFullYear();
 	let currentMonth = new Date().getMonth()
@@ -45,6 +49,12 @@ function printNextGame(data, league) {
 	textNextGameMatchday.innerHTML = data['Group']['GroupName'] + ' - ' + new Date(data['MatchDateTime']).toLocaleString('de-DE', { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', });
 	textNextGameTeam1.innerHTML = data['Team1']['ShortName'];
 	textNextGameTeam2.innerHTML = data['Team2']['ShortName'];
+
+	if (league == "bl2") {
+		nextMatchdayBl2 = data['Group']['GroupOrderID'];
+	} else {
+		nextMatchdayDfb = data['Group']['GroupOrderID'];
+	}
 }
 
 function printLastGame(data, league) {
@@ -114,6 +124,50 @@ function printTable(data) {
 	}
 }
 
+function triggerIcs(league) {
+	if (league == "bl2") {
+		callApi('https://www.openligadb.de/api/getmatchdata/bl2/' + getSeason() + '/' + nextMatchdayBl2).then(data => extractRelevantData(data));
+	}
+}
+
+function extractRelevantData(data) {
+	for (let key in data) {
+		if (data[key]['Team1']['TeamId'] == 98 || data[key]['Team2']['TeamId'] == 98) {
+			if (!data[key]['MatchDateTime'].includes('15:30')) {
+				upcomingMetchdaysBl2.push({ title:  data[key]['Team1']['ShortName'] + ' - ' + data[key]['Team2']['ShortName'], date: data[key].MatchDateTime });
+				nextMatchdayBl2++;
+				triggerIcs('bl2');
+			} else {
+				generateIcs('bl2');
+			}
+		} 
+	}
+}
+
+function generateIcs(data){
+	if (data == 'bl2') {
+		let icsTemplateBody = '';
+		let helper = 1;
+		console.log(upcomingMetchdaysBl2.length)
+		for (let key in upcomingMetchdaysBl2) {
+			title = upcomingMetchdaysBl2[key]['title'];
+			if (helper == 5) {
+				title = "Letzter Termin! " + title;
+			}
+			startDate = upcomingMetchdaysBl2[key]['date'];
+			regex = 'T(..)';
+			findHour = startDate.match(regex);
+			endDate = parseInt(findHour[1]) + 2
+			calculateEndDate = startDate.replace(findHour[1], endDate);
+			startDate = startDate.replaceAll("-", "").replaceAll(":","");
+			calculateEndDate = calculateEndDate.replaceAll("-", "").replaceAll(":","");
+			icsTemplateBody = icsTemplateBody + icsTemplateEvent1 + startDate +"\n" + icsTemplateEvent2 + calculateEndDate + "\n" + icsTemplateEvent3 + title +"\n" + icsTemplateEvent4 + "\n";
+			helper++;
+		}
+		let blob = new Blob([icsTemplateHeader + icsTemplateBody + icsTemplateFooter + "\n"], { type: "text/plain;charset=utf-8", });
+		saveAs(blob, 'bl2.ics');
+	}
+}
 
 callApi('https://www.openligadb.de/api/getbltable/bl2/' + getSeason()).then(data => printTable(data));
 callApi('https://www.openligadb.de/api/getmatchdata/dfb' + getSeason()).then(data => triggerDfbPokal(data));
