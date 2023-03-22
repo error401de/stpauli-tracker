@@ -151,7 +151,7 @@ function generateIcs(data){
 		
 		for (let key in upcomingMetchdaysBl2) {
 			title = upcomingMetchdaysBl2[key]['title'];
-			if (helper == 5) {
+			if (helper == upcomingMetchdaysBl2.length) {
 				title = "Letzter Termin! " + title;
 			}
 			startDate = upcomingMetchdaysBl2[key]['date'];
