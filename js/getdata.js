@@ -143,25 +143,31 @@ function extractRelevantData(data) {
 		} 
 	}
 }
-
 function generateIcs(data){
 	if (data == 'bl2') {
 		let icsTemplateBody = '';
 		let helper = 1;
-		
 		for (let key in upcomingMetchdaysBl2) {
 			title = upcomingMetchdaysBl2[key]['title'];
 			if (helper == upcomingMetchdaysBl2.length) {
 				title = "Letzter Termin! " + title;
 			}
 			startDate = upcomingMetchdaysBl2[key]['date'];
-			regex = 'T(..)';
-			findHour = startDate.match(regex);
-			endDate = parseInt(findHour[1]) + 2
-			calculateEndDate = startDate.replace(findHour[1], endDate);
+
+			stringToDate = new Date(startDate);
+			endDate = stringToDate.setHours(stringToDate.getHours() + 2);
+			endDate = new Date(endDate);
+			
+			year = endDate.toLocaleString("default", { year: "numeric" });
+			month = endDate.toLocaleString("default", { month: "2-digit" });
+			day = endDate.toLocaleString("default", { day: "2-digit" });
+			hour = endDate.toLocaleString("default", { hour: "2-digit" });
+			minute = endDate.toLocaleString("default", { minute: "numeric" });
+			endDate = year + "-" + month + "-" + day + "T" + hour + ":" + minute;
+
 			startDate = startDate.replaceAll("-", "").replaceAll(":","");
-			calculateEndDate = calculateEndDate.replaceAll("-", "").replaceAll(":","");
-			icsTemplateBody = icsTemplateBody + icsTemplateEvent1 + startDate +"\n" + icsTemplateEvent2 + calculateEndDate + "\n" + icsTemplateEvent3 + title +"\n" + icsTemplateEvent4 + "\n";
+			renderEndDate = endDate.replaceAll(":0",":00:00").replaceAll(":30",":30:00").replaceAll("-", "").replaceAll(":","");
+			icsTemplateBody = icsTemplateBody + icsTemplateEvent1 + startDate +"\n" + icsTemplateEvent2 + renderEndDate + "\n" + icsTemplateEvent3 + title +"\n" + icsTemplateEvent4 + "\n";
 			helper++;
 		}
 		let blob = new Blob([icsTemplateHeader + icsTemplateBody + icsTemplateFooter + "\n"], { type: "text/plain;charset=utf-8", });
