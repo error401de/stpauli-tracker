@@ -176,5 +176,5 @@ function generateIcs(data){
 }
 
 callApi('https://api.openligadb.de/getbltable/bl2/' + getSeason()).then(data => printTable(data));
-callApi('https://api.openligadb.de/getmatchdata/dfb' + getSeason()).then(data => triggerDfbPokal(data));
+callApi('https://api.openligadb.de/getmatchdata/dfb').then(data => triggerDfbPokal(data));
 callApi('https://api.openligadb.de/getmatchdata/bl2').then(data => triggerBl2(data));
