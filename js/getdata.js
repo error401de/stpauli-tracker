@@ -1,6 +1,6 @@
-let nextMatchdayBl2 = "";
+let nextMatchdayBl1 = "";
 let nextMatchdayDfb = "";
-let upcomingMetchdaysBl2 = [];
+let upcomingMetchdaysBl1 = [];
 
 function getSeason() {
 	let currentYear = new Date().getFullYear();
@@ -25,10 +25,10 @@ function triggerDfbPokal(data) {
 	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + dfbPokalId + '/98').then(data => printLastGame(data, 'dfb'))
 }
 
-function triggerBl2(data) {
-	bl2Id = data[0]['leagueId'];
-	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + bl2Id + '/98').then(data => printNextGame(data, 'bl2'))
-	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + bl2Id + '/98').then(data => printLastGame(data, 'bl2'))
+function triggerBl1(data) {
+	bl1Id = data[0]['leagueId'];
+	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + bl1Id + '/98').then(data => printNextGame(data, 'bl1'))
+	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + bl1Id + '/98').then(data => printLastGame(data, 'bl1'))
 }
 
 function printNextGame(data, league) {
@@ -50,8 +50,8 @@ function printNextGame(data, league) {
 	textNextGameTeam1.innerHTML = data['team1']['shortName'];
 	textNextGameTeam2.innerHTML = data['team2']['shortName'];
 
-	if (league == "bl2") {
-		nextMatchdayBl2 = data['group']['groupOrderID'];
+	if (league == "bl1") {
+		nextMatchdayBl1 = data['group']['groupOrderID'];
 	} else {
 		nextMatchdayDfb = data['group']['groupOrderID'];
 	}
@@ -125,8 +125,8 @@ function printTable(data) {
 }
 
 function triggerIcs(league) {
-	if (league == "bl2") {
-		callApi('https://api.openligadb.de/getmatchdata/bl2/' + getSeason() + '/' + nextMatchdayBl2).then(data => extractRelevantData(data));
+	if (league == "bl1") {
+		callApi('https://api.openligadb.de/getmatchdata/bl1/' + getSeason() + '/' + nextMatchdayBl1).then(data => extractRelevantData(data));
 	}
 }
 
@@ -134,25 +134,25 @@ function extractRelevantData(data) {
 	for (let key in data) {
 		if (data[key]['team1']['teamId'] == 98 || data[key]['team2']['teamId'] == 98) {
 			if (!data[key]['matchDateTime'].includes('15:30')) {
-				upcomingMetchdaysBl2.push({ title:  data[key]['team1']['shortName'] + ' - ' + data[key]['team2']['shortName'], date: data[key].matchDateTime });
-				nextMatchdayBl2++;
-				triggerIcs('bl2');
+				upcomingMetchdaysBl1.push({ title:  data[key]['team1']['shortName'] + ' - ' + data[key]['team2']['shortName'], date: data[key].matchDateTime });
+				nextMatchdayBl1++;
+				triggerIcs('bl1');
 			} else {
-				generateIcs('bl2');
+				generateIcs('bl1');
 			}
 		} 
 	}
 }
 function generateIcs(data){
-	if (data == 'bl2') {
+	if (data == 'bl1') {
 		let icsTemplateBody = '';
 		let helper = 1;
-		for (let key in upcomingMetchdaysBl2) {
-			title = upcomingMetchdaysBl2[key]['title'];
-			if (helper == upcomingMetchdaysBl2.length) {
+		for (let key in upcomingMetchdaysBl1) {
+			title = upcomingMetchdaysBl1[key]['title'];
+			if (helper == upcomingMetchdaysBl1.length) {
 				title = "Letzter Termin! " + title;
 			}
-			startDate = upcomingMetchdaysBl2[key]['date'];
+			startDate = upcomingMetchdaysBl1[key]['date'];
 
 			stringToDate = new Date(startDate);
 			endDate = stringToDate.setHours(stringToDate.getHours() + 2);
@@ -171,10 +171,10 @@ function generateIcs(data){
 			helper++;
 		}
 		let blob = new Blob([icsTemplateHeader + icsTemplateBody + icsTemplateFooter + "\n"], { type: "text/plain;charset=utf-8", });
-		saveAs(blob, 'bl2.ics');
+		saveAs(blob, 'bl1.ics');
 	}
 }
 
-callApi('https://api.openligadb.de/getbltable/bl2/' + getSeason()).then(data => printTable(data));
-callApi('https://api.openligadb.de/getmatchdata/dfb').then(data => triggerDfbPokal(data));
-callApi('https://api.openligadb.de/getmatchdata/bl2').then(data => triggerBl2(data));
+callApi('https://api.openligadb.de/getbltable/bl1/' + getSeason()).then(data => printTable(data));
+callApi('https://api.openligadb.de/getmatchdata/dfb/').then(data => triggerDfbPokal(data));
+callApi('https://api.openligadb.de/getmatchdata/bl1').then(data => triggerBl1(data));
