@@ -152,7 +152,6 @@ td {
 
 .stpauli-highlight {
   background-color: #ec1b24;
-  border: none;
   font-weight: 700;
   color: #fff;
 }
@@ -162,7 +161,7 @@ td {
 }
 
 .table-el {
-  border-left: 2px solid blue;
+  border-left: 2px solid royalblue;
 }
 
 .table-elq {
