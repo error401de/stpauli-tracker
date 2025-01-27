@@ -91,6 +91,19 @@ function printTable(data) {
 		let newRow = table.insertRow(helper);
 
 		let newCellPosition = newRow.insertCell(-1);
+
+		if (helper >= 1 && helper <= 4) {
+		    newCellPosition.setAttribute("class", "table-cl");
+		} else if (helper === 5) {
+		    newCellPosition.setAttribute("class", "table-el");
+		} else if (helper === 6) {
+		    newCellPosition.setAttribute("class", "table-elq");
+		} else if (helper === 16) {
+		    newCellPosition.setAttribute("class", "table-rel");
+		} else if (helper >= 17) {
+		    newCellPosition.setAttribute("class", "table-down");
+		}
+		
 		let newCellLogo= newRow.insertCell(-1);
 		let newCellTeam= newRow.insertCell(-1);
 		let newCellMatches= newRow.insertCell(-1);
