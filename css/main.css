@@ -157,6 +157,26 @@ td {
   color: #fff;
 }
 
+.table-cl {
+  border-left: 2px solid green;
+}
+
+.table-el {
+  border-left: 2px solid blue;
+}
+
+.table-elq {
+  border-left: 2px solid lightblue;
+}
+
+.table-rel {
+  border-left: 2px solid orange;
+}
+
+.table-down {
+  border-left: 2px solid red;
+}
+
 #github {
   position: absolute;
   bottom: 0;
