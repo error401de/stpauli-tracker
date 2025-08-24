@@ -144,18 +144,23 @@ function triggerIcs(league) {
 }
 
 function extractRelevantData(data) {
-	for (let key in data) {
-		if (data[key]['team1']['teamId'] == 98 || data[key]['team2']['teamId'] == 98) {
-			if (!data[key]['matchDateTime'].includes('15:30')) {
+	// A matchday is seen as valid matchday, if there is at least one game with a different 'matchDateTime', except matchday 34.
+	const times = data.map(match => match.matchDateTime);
+	const allSame = times.every(time => time === times[0]);
+	
+	if (allSame && data[0].group.groupOrderID !== 34) {
+		generateIcs('bl1');
+	} else {
+		for (let key in data) {
+			if (data[key]['team1']['teamId'] == 98 || data[key]['team2']['teamId'] == 98) {
 				upcomingMetchdaysBl1.push({ title:  data[key]['team1']['shortName'] + ' - ' + data[key]['team2']['shortName'], date: data[key].matchDateTime });
 				nextMatchdayBl1++;
 				triggerIcs('bl1');
-			} else {
-				generateIcs('bl1');
-			}
-		} 
+			} 
+		}
 	}
 }
+
 function generateIcs(data){
 	if (data == 'bl1') {
 		let icsTemplateBody = '';
