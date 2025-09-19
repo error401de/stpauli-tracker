@@ -184,29 +184,54 @@ td {
   transform: translateX(-50%);
 }
 
-/* Modal for "Nächste Spieltage" */
-.modal.hidden { display: none; }
-.modal { position: fixed; inset: 0; z-index: 1000; }
-.modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.35); }
+.modal.hidden {
+  display: none;
+}
+
+.modal {
+  position: fixed; inset: 0; z-index: 1000;
+}
+
+.modal-backdrop {
+  position: absolute; inset: 0; background: rgba(0,0,0,0.35);
+}
+
 .modal-content {
   position: relative; margin: 5vh auto 0 auto; max-width: 640px;
   background: #fff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   padding: 16px 18px 20px 18px; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
-.modal-header { display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 12px; }
-.modal-close { appearance: none; border: none; background: transparent; font-size: 22px; line-height: 1; cursor: pointer; }
-.modal-body { max-height: 65vh; overflow: auto; }
-.matchday-list { display: grid; gap: 8px; }
-.matchday-item { padding: 10px 12px; border: 1px solid #eee; border-radius: 10px;
-  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-.matchday-item .label { font-weight: 600; }
-.matchday-item .games { font-weight: 500; }
-.links a { text-decoration: none; }
-.links a:hover { text-decoration: underline; }
 
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 12px;
+}
 
-/* Opponent team logo inside modal list */
+.modal-close {
+  appearance: none; border: none; background: transparent; font-size: 22px; line-height: 1; cursor: pointer;
+}
+
+.modal-body {
+  max-height: 65vh; overflow: auto;
+}
+
+.matchday-list {
+  display: grid; gap: 8px;
+}
+
+.matchday-item {
+  padding: 10px 12px; border: 1px solid #eee; border-radius: 10px;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+}
+
+.matchday-item .label {
+  font-weight: 600;
+}
+
+.matchday-item .games {
+  font-weight: 500;
+}
+
 .team-logo {
   height: 18px; width: 18px;
   object-fit: contain;

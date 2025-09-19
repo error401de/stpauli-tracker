@@ -1,6 +1,7 @@
 let nextMatchdayBl1 = "";
 let nextMatchdayDfb = "";
 let upcomingMetchdaysBl1 = [];
+const STPAULI_TEAM_ID = 98;
 
 function getSeason() {
 	let currentYear = new Date().getFullYear();
@@ -21,14 +22,14 @@ async function callApi(url) {
 
 function triggerDfbPokal(data) {
 	dfbPokalId = data[0]['leagueId'];
-	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + dfbPokalId + '/98').then(data => printNextGame(data, 'dfb'))
-	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + dfbPokalId + '/98').then(data => printLastGame(data, 'dfb'))
+	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + dfbPokalId + STPAULI_TEAM_ID).then(data => printNextGame(data, 'dfb'))
+	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + dfbPokalId + STPAULI_TEAM_ID).then(data => printLastGame(data, 'dfb'))
 }
 
 function triggerBl1(data) {
 	bl1Id = data[0]['leagueId'];
-	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + bl1Id + '/98').then(data => printNextGame(data, 'bl1'))
-	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + bl1Id + '/98').then(data => printLastGame(data, 'bl1'))
+	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + bl1Id + STPAULI_TEAM_ID).then(data => printNextGame(data, 'bl1'))
+	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + bl1Id + STPAULI_TEAM_ID).then(data => printLastGame(data, 'bl1'))
 }
 
 function printNextGame(data, league) {
@@ -152,7 +153,7 @@ function extractRelevantData(data) {
 		generateIcs('bl1');
 	} else {
 		for (let key in data) {
-			if (data[key]['team1']['teamId'] == 98 || data[key]['team2']['teamId'] == 98) {
+			if (data[key]['team1']['teamId'] == STPAULI_TEAM_ID || data[key]['team2']['teamId'] == STPAULI_TEAM_ID) {
 				upcomingMetchdaysBl1.push({ title:  data[key]['team1']['shortName'] + ' - ' + data[key]['team2']['shortName'], date: data[key].matchDateTime });
 				nextMatchdayBl1++;
 				triggerIcs('bl1');
@@ -197,9 +198,6 @@ callApi('https://api.openligadb.de/getbltable/bl1/' + getSeason()).then(data => 
 callApi('https://api.openligadb.de/getmatchdata/dfb/').then(data => triggerDfbPokal(data));
 callApi('https://api.openligadb.de/getmatchdata/bl1').then(data => triggerBl1(data));
 
-
-// --- New: "Nächste Spieltage" (Bundesliga only, show St. Pauli games only) ---
-
 function openNextMatchdaysModal() {
   const modal = document.getElementById('nextMatchdaysModal');
   if (!modal) return;
@@ -213,10 +211,6 @@ function closeNextMatchdaysModal() {
   modal.classList.add('hidden');
 }
 
-// St. Pauli teamId in OpenLigaDB
-const STPAULI_TEAM_ID = 98;
-
-// Valid if: at least TWO distinct matchDateTime values within the matchday and md !== 34
 function isValidMatchday(matches) {
   if (!Array.isArray(matches) || matches.length === 0) return false;
   const md = matches[0] && matches[0].group ? matches[0].group.groupOrderID : undefined;
@@ -277,7 +271,7 @@ async function getUpcomingPauliMatchdays(limit = 8) {
         const logoImg = oppLogo ? '<img class="team-logo" src="' + oppLogo + '" alt="' + opp + ' Logo">' : '';
         return logoImg + opp + ' (' + ha + ') – ' + when;
       });
-result.push({ season, matchday: md, gamesDisplay });
+			result.push({ season, matchday: md, gamesDisplay });
     } catch (e) {
       console.warn('Failed to fetch matchday', md, e);
     }
