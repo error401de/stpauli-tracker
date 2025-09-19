@@ -22,14 +22,14 @@ async function callApi(url) {
 
 function triggerDfbPokal(data) {
 	dfbPokalId = data[0]['leagueId'];
-	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + dfbPokalId + STPAULI_TEAM_ID).then(data => printNextGame(data, 'dfb'))
-	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + dfbPokalId + STPAULI_TEAM_ID).then(data => printLastGame(data, 'dfb'))
+	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + dfbPokalId + '/' + STPAULI_TEAM_ID).then(data => printNextGame(data, 'dfb'))
+	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + dfbPokalId + '/' + STPAULI_TEAM_ID).then(data => printLastGame(data, 'dfb'))
 }
 
 function triggerBl1(data) {
 	bl1Id = data[0]['leagueId'];
-	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + bl1Id + STPAULI_TEAM_ID).then(data => printNextGame(data, 'bl1'))
-	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + bl1Id + STPAULI_TEAM_ID).then(data => printLastGame(data, 'bl1'))
+	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + bl1Id + '/' + STPAULI_TEAM_ID).then(data => printNextGame(data, 'bl1'))
+	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + bl1Id + '/' + STPAULI_TEAM_ID).then(data => printLastGame(data, 'bl1'))
 }
 
 function printNextGame(data, league) {
