@@ -1,6 +1,7 @@
 let nextMatchdayBl1 = "";
 let nextMatchdayDfb = "";
 let upcomingMetchdaysBl1 = [];
+const STPAULI_TEAM_ID = 98;
 
 function getSeason() {
 	let currentYear = new Date().getFullYear();
@@ -21,14 +22,14 @@ async function callApi(url) {
 
 function triggerDfbPokal(data) {
 	dfbPokalId = data[0]['leagueId'];
-	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + dfbPokalId + '/98').then(data => printNextGame(data, 'dfb'))
-	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + dfbPokalId + '/98').then(data => printLastGame(data, 'dfb'))
+	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + dfbPokalId + '/' + STPAULI_TEAM_ID).then(data => printNextGame(data, 'dfb'))
+	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + dfbPokalId + '/' + STPAULI_TEAM_ID).then(data => printLastGame(data, 'dfb'))
 }
 
 function triggerBl1(data) {
 	bl1Id = data[0]['leagueId'];
-	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + bl1Id + '/98').then(data => printNextGame(data, 'bl1'))
-	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + bl1Id + '/98').then(data => printLastGame(data, 'bl1'))
+	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + bl1Id + '/' + STPAULI_TEAM_ID).then(data => printNextGame(data, 'bl1'))
+	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + bl1Id + '/' + STPAULI_TEAM_ID).then(data => printLastGame(data, 'bl1'))
 }
 
 function printNextGame(data, league) {
@@ -152,7 +153,7 @@ function extractRelevantData(data) {
 		generateIcs('bl1');
 	} else {
 		for (let key in data) {
-			if (data[key]['team1']['teamId'] == 98 || data[key]['team2']['teamId'] == 98) {
+			if (data[key]['team1']['teamId'] == STPAULI_TEAM_ID || data[key]['team2']['teamId'] == STPAULI_TEAM_ID) {
 				upcomingMetchdaysBl1.push({ title:  data[key]['team1']['shortName'] + ' - ' + data[key]['team2']['shortName'], date: data[key].matchDateTime });
 				nextMatchdayBl1++;
 				triggerIcs('bl1');
@@ -196,3 +197,110 @@ function generateIcs(data){
 callApi('https://api.openligadb.de/getbltable/bl1/' + getSeason()).then(data => printTable(data));
 callApi('https://api.openligadb.de/getmatchdata/dfb/').then(data => triggerDfbPokal(data));
 callApi('https://api.openligadb.de/getmatchdata/bl1').then(data => triggerBl1(data));
+
+function openNextMatchdaysModal() {
+  const modal = document.getElementById('nextMatchdaysModal');
+  if (!modal) return;
+  modal.classList.remove('hidden');
+  loadAndRenderPauliUpcomingMatchdays().catch(console.error);
+}
+
+function closeNextMatchdaysModal() {
+  const modal = document.getElementById('nextMatchdaysModal');
+  if (!modal) return;
+  modal.classList.add('hidden');
+}
+
+function isValidMatchday(matches) {
+  if (!Array.isArray(matches) || matches.length === 0) return false;
+  const md = matches[0] && matches[0].group ? matches[0].group.groupOrderID : undefined;
+  if (md === 34) return false;
+  const times = new Set();
+  for (const m of matches) {
+    const dt = m && m.matchDateTime ? m.matchDateTime : null;
+    if (dt) times.add(dt);
+  }
+  // "at least one game with a different matchDateTime" -> two different times needed
+  return times.size > 1;
+}
+
+async function fetchMatchday(season, matchday) {
+  const url = `https://api.openligadb.de/getmatchdata/bl1/${season}/${matchday}`;
+  return callApi(url);
+}
+
+function isFuture(dateStr) {
+  try { return new Date(dateStr) >= new Date(); } catch(e) { return false; }
+}
+
+async function getUpcomingPauliMatchdays(limit = 8) {
+  const season = getSeason();
+  let startMd;
+  try {
+    if (typeof nextMatchdayBl1 !== 'undefined' && nextMatchdayBl1) {
+      startMd = Number(nextMatchdayBl1);
+    }
+  } catch(e) {}
+  if (!startMd || Number.isNaN(startMd)) startMd = 1;
+
+  const result = [];
+  for (let md = startMd; md <= 34 && result.length < limit; md++) {
+    try {
+      const data = await fetchMatchday(season, md);
+      if (!Array.isArray(data) || data.length === 0) continue;
+      if (!isValidMatchday(data)) continue;
+
+      const pauliGames = data.filter(m =>
+        (m.team1 && m.team1.teamId === STPAULI_TEAM_ID) ||
+        (m.team2 && m.team2.teamId === STPAULI_TEAM_ID)
+      );
+
+      if (!pauliGames.length) continue;
+      if (!pauliGames.some(g => isFuture(g.matchDateTime || g.matchDateTimeUTC))) continue;
+
+      
+      const gamesDisplay = pauliGames.map(g => {
+        const isHome = g.team1 && g.team1.teamId === STPAULI_TEAM_ID;
+        const oppTeam = isHome ? (g.team2 || {}) : (g.team1 || {});
+        const opp = oppTeam.teamName || 'Gegner';
+        const oppLogo = oppTeam.teamIconUrl || '';
+        const when = g.matchDateTime ? new Date(g.matchDateTime).toLocaleString('de-DE', {
+          weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+        }) : '';
+        const ha = isHome ? 'H' : 'A';
+        const logoImg = oppLogo ? '<img class="team-logo" src="' + oppLogo + '" alt="' + opp + ' Logo">' : '';
+        return logoImg + opp + ' (' + ha + ') – ' + when;
+      });
+			result.push({ season, matchday: md, gamesDisplay });
+    } catch (e) {
+      console.warn('Failed to fetch matchday', md, e);
+    }
+  }
+  return result;
+}
+
+async function loadAndRenderPauliUpcomingMatchdays() {
+  const container = document.getElementById('nextMatchdaysList');
+  if (!container) return;
+  container.innerHTML = '<p>Lade Spieltage…</p>';
+  try {
+    const rows = await getUpcomingPauliMatchdays(12);
+    if (!rows.length) {
+      container.innerHTML = '<p>Keine kommenden St. Pauli-Spieltage gefunden.</p>';
+      return;
+    }
+    container.innerHTML = rows.map(item => {
+      const label = 'Spieltag ' + item.matchday;
+      const games = item.gamesDisplay.map(t => '<div class="games">' + t + '</div>').join('');
+      return (
+        '<div class="matchday-item">' +
+          '<span class="label">' + label + '</span>' +
+          games +
+        '</div>'
+      );
+    }).join('');
+  } catch (e) {
+    container.innerHTML = '<p>Fehler beim Laden.</p>';
+    console.error(e);
+  }
+}

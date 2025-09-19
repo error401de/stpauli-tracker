@@ -45,7 +45,7 @@
 							<div class="team-labels"><img id="dfbNextGameIconTeam1"><img id="dfbNextGameIconTeam2"></div>
 							<p id="dfbNextGameTeams" class="team-labels"><span id="dfbNextGameTeam1"></span>&nbsp;-&nbsp;<span id="dfbNextGameTeam2"></span></p>
 						<p id="dfbNextGameMatchday" class="date"></p>
-						<p><a href="javascript:triggerIcs('bl1')">ICS Export</a></p>
+						<p><a href="javascript:triggerIcs('bl1')">ICS Export</a> &nbsp;&middot;&nbsp; <a id="linkNextMatchdays" href="#" onclick="openNextMatchdaysModal(); return false;">Nächste Spieltage</a></p>
 					</div>
 
 					<div class="box">
@@ -64,6 +64,20 @@
 					</div>
 				</div>
 			<a href="https://github.com/error401de/stpauli-tracker" target="_blank"><img id="github" src="img/github.png"></a>
+			
+<div id="nextMatchdaysModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="nextMatchdaysTitle">
+  <div class="modal-backdrop" onclick="closeNextMatchdaysModal()"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="nextMatchdaysTitle">Nächste Spieltage</h2>
+      <button class="modal-close" aria-label="Schließen" onclick="closeNextMatchdaysModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="nextMatchdaysList" class="matchday-list"></div>
+    </div>
+  </div>
+</div>
+
 			</main>
 		</div>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.4/FileSaver.js"></script>
