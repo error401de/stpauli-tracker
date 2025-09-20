@@ -138,28 +138,30 @@ function printTable(data) {
 	}
 }
 
-function triggerIcs(league) {
-	if (league == "bl1") {
-		callApi('https://api.openligadb.de/getmatchdata/bl1/' + getSeason() + '/' + nextMatchdayBl1).then(data => extractRelevantData(data));
-	}
+async function triggerIcs(league, matchdayOverride = null) {
+  if (league !== "bl1") return;
+  const startMd = matchdayOverride ?? Number(nextMatchdayBl1);
+  const data = await fetchMatchday(getSeason(), startMd);
+  extractRelevantData(data, startMd);
 }
 
-function extractRelevantData(data) {
-	// A matchday is seen as valid matchday, if there is at least one game with a different 'matchDateTime', except matchday 34.
-	const times = data.map(match => match.matchDateTime);
-	const allSame = times.every(time => time === times[0]);
-	
-	if (allSame && data[0].group.groupOrderID !== 34) {
-		generateIcs('bl1');
-	} else {
-		for (let key in data) {
-			if (data[key]['team1']['teamId'] == STPAULI_TEAM_ID || data[key]['team2']['teamId'] == STPAULI_TEAM_ID) {
-				upcomingMetchdaysBl1.push({ title:  data[key]['team1']['shortName'] + ' - ' + data[key]['team2']['shortName'], date: data[key].matchDateTime });
-				nextMatchdayBl1++;
-				triggerIcs('bl1');
-			} 
-		}
-	}
+function extractRelevantData(data, currentMd) {
+  if (!isValidMatchday(data) && data[0].group.groupOrderID !== 34) {
+    generateIcs('bl1');
+  } else {
+    for (let key in data) {
+      if (data[key]['team1']['teamId'] == STPAULI_TEAM_ID || data[key]['team2']['teamId'] == STPAULI_TEAM_ID) {
+        upcomingMetchdaysBl1.push({
+          title: data[key]['team1']['shortName'] + ' - ' + data[key]['team2']['shortName'],
+          date: data[key].matchDateTime
+        });
+
+        // wichtig: nicht nextMatchdayBl1 manipulieren!
+        const nextMd = currentMd + 1;
+        triggerIcs('bl1', nextMd);
+      }
+    }
+  }
 }
 
 function generateIcs(data){
@@ -211,17 +213,10 @@ function closeNextMatchdaysModal() {
   modal.classList.add('hidden');
 }
 
-function isValidMatchday(matches) {
-  if (!Array.isArray(matches) || matches.length === 0) return false;
-  const md = matches[0] && matches[0].group ? matches[0].group.groupOrderID : undefined;
-  if (md === 34) return false;
-  const times = new Set();
-  for (const m of matches) {
-    const dt = m && m.matchDateTime ? m.matchDateTime : null;
-    if (dt) times.add(dt);
-  }
-  // "at least one game with a different matchDateTime" -> two different times needed
-  return times.size > 1;
+function isValidMatchday(data) {
+	const times = data.map(match => match.matchDateTime);
+	const allSame = times.every(time => time === times[0]);
+	return !allSame;
 }
 
 async function fetchMatchday(season, matchday) {
@@ -233,7 +228,7 @@ function isFuture(dateStr) {
   try { return new Date(dateStr) >= new Date(); } catch(e) { return false; }
 }
 
-async function getUpcomingPauliMatchdays(limit = 8) {
+async function getUpcomingPauliMatchdays() {
   const season = getSeason();
   let startMd;
   try {
@@ -244,7 +239,7 @@ async function getUpcomingPauliMatchdays(limit = 8) {
   if (!startMd || Number.isNaN(startMd)) startMd = 1;
 
   const result = [];
-  for (let md = startMd; md <= 34 && result.length < limit; md++) {
+  for (let md = startMd; md <= 34; md++) {
     try {
       const data = await fetchMatchday(season, md);
       if (!Array.isArray(data) || data.length === 0) continue;
@@ -284,7 +279,7 @@ async function loadAndRenderPauliUpcomingMatchdays() {
   if (!container) return;
   container.innerHTML = '<p>Lade Spieltage…</p>';
   try {
-    const rows = await getUpcomingPauliMatchdays(12);
+    const rows = await getUpcomingPauliMatchdays();
     if (!rows.length) {
       container.innerHTML = '<p>Keine kommenden St. Pauli-Spieltage gefunden.</p>';
       return;
