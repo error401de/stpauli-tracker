@@ -233,7 +233,7 @@ function isFuture(dateStr) {
   try { return new Date(dateStr) >= new Date(); } catch(e) { return false; }
 }
 
-async function getUpcomingPauliMatchdays(limit = 8) {
+async function getUpcomingPauliMatchdays() {
   const season = getSeason();
   let startMd;
   try {
@@ -244,7 +244,7 @@ async function getUpcomingPauliMatchdays(limit = 8) {
   if (!startMd || Number.isNaN(startMd)) startMd = 1;
 
   const result = [];
-  for (let md = startMd; md <= 34 && result.length < limit; md++) {
+  for (let md = startMd; md <= 34; md++) {
     try {
       const data = await fetchMatchday(season, md);
       if (!Array.isArray(data) || data.length === 0) continue;
@@ -284,7 +284,7 @@ async function loadAndRenderPauliUpcomingMatchdays() {
   if (!container) return;
   container.innerHTML = '<p>Lade Spieltage…</p>';
   try {
-    const rows = await getUpcomingPauliMatchdays(12);
+    const rows = await getUpcomingPauliMatchdays();
     if (!rows.length) {
       container.innerHTML = '<p>Keine kommenden St. Pauli-Spieltage gefunden.</p>';
       return;
