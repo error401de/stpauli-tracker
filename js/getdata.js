@@ -145,11 +145,7 @@ function triggerIcs(league) {
 }
 
 function extractRelevantData(data) {
-	// A matchday is seen as valid matchday, if there is at least one game with a different 'matchDateTime', except matchday 34.
-	const times = data.map(match => match.matchDateTime);
-	const allSame = times.every(time => time === times[0]);
-	
-	if (allSame && data[0].group.groupOrderID !== 34) {
+	if (!isValidMatchday(data) && data[0].group.groupOrderID !== 34) {
 		generateIcs('bl1');
 	} else {
 		for (let key in data) {
@@ -211,17 +207,11 @@ function closeNextMatchdaysModal() {
   modal.classList.add('hidden');
 }
 
-function isValidMatchday(matches) {
-  if (!Array.isArray(matches) || matches.length === 0) return false;
-  const md = matches[0] && matches[0].group ? matches[0].group.groupOrderID : undefined;
-  if (md === 34) return false;
-  const times = new Set();
-  for (const m of matches) {
-    const dt = m && m.matchDateTime ? m.matchDateTime : null;
-    if (dt) times.add(dt);
-  }
-  // "at least one game with a different matchDateTime" -> two different times needed
-  return times.size > 1;
+function isValidMatchday(data) {
+	const times = data.map(match => match.matchDateTime);
+	const allSame = times.every(time => time === times[0]);
+	console.log(!allSame);
+	return !allSame;
 }
 
 async function fetchMatchday(season, matchday) {
