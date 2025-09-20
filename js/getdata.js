@@ -138,24 +138,30 @@ function printTable(data) {
 	}
 }
 
-function triggerIcs(league) {
-	if (league == "bl1") {
-		callApi('https://api.openligadb.de/getmatchdata/bl1/' + getSeason() + '/' + nextMatchdayBl1).then(data => extractRelevantData(data));
-	}
+async function triggerIcs(league, matchdayOverride = null) {
+  if (league !== "bl1") return;
+  const startMd = matchdayOverride ?? Number(nextMatchdayBl1);
+  const data = await fetchMatchday(getSeason(), startMd);
+  extractRelevantData(data, startMd);
 }
 
-function extractRelevantData(data) {
-	if (!isValidMatchday(data) && data[0].group.groupOrderID !== 34) {
-		generateIcs('bl1');
-	} else {
-		for (let key in data) {
-			if (data[key]['team1']['teamId'] == STPAULI_TEAM_ID || data[key]['team2']['teamId'] == STPAULI_TEAM_ID) {
-				upcomingMetchdaysBl1.push({ title:  data[key]['team1']['shortName'] + ' - ' + data[key]['team2']['shortName'], date: data[key].matchDateTime });
-				nextMatchdayBl1++;
-				triggerIcs('bl1');
-			} 
-		}
-	}
+function extractRelevantData(data, currentMd) {
+  if (!isValidMatchday(data) && data[0].group.groupOrderID !== 34) {
+    generateIcs('bl1');
+  } else {
+    for (let key in data) {
+      if (data[key]['team1']['teamId'] == STPAULI_TEAM_ID || data[key]['team2']['teamId'] == STPAULI_TEAM_ID) {
+        upcomingMetchdaysBl1.push({
+          title: data[key]['team1']['shortName'] + ' - ' + data[key]['team2']['shortName'],
+          date: data[key].matchDateTime
+        });
+
+        // wichtig: nicht nextMatchdayBl1 manipulieren!
+        const nextMd = currentMd + 1;
+        triggerIcs('bl1', nextMd);
+      }
+    }
+  }
 }
 
 function generateIcs(data){
@@ -210,7 +216,6 @@ function closeNextMatchdaysModal() {
 function isValidMatchday(data) {
 	const times = data.map(match => match.matchDateTime);
 	const allSame = times.every(time => time === times[0]);
-	console.log(!allSame);
 	return !allSame;
 }
 
