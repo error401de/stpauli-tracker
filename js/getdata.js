@@ -39,11 +39,15 @@ function printNextGame(data, league) {
 	let textNextGameTeam2 = document.getElementById(league + 'NextGameTeam2');
 
 	let textNextGameIconTeam1 = document.getElementById(league + 'NextGameIconTeam1')
-	textNextGameIconTeam1.src = data['team1']['teamIconUrl'];
+	textNextGameIconTeam1.src = data.team1.teamId === STPAULI_TEAM_ID
+  ? 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Fc_st_pauli_logo.svg'
+  : data.team1.teamIconUrl;
 	textNextGameIconTeam1.setAttribute("class", "img-icon-big");
 
 	let textNextGameIconTeam2 = document.getElementById(league + 'NextGameIconTeam2')
-	textNextGameIconTeam2.src = data['team2']['teamIconUrl'];
+	textNextGameIconTeam2.src = data.team2.teamId === STPAULI_TEAM_ID
+  ? 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Fc_st_pauli_logo.svg'
+  : data.team2.teamIconUrl;
 	textNextGameIconTeam2.setAttribute("class", "img-icon-big");
 	
 	textNextGame.innerHTML = data['leagueName'];
@@ -66,11 +70,15 @@ function printLastGame(data, league) {
 	let textLastGamePoints = document.getElementById(league + 'LastGamePoints');
 
 	let textLastGameIconTeam1 = document.getElementById(league + 'LastGameIconTeam1')
-	textLastGameIconTeam1.src = data['team1']['teamIconUrl'];
+	textLastGameIconTeam1.src = data.team1.teamId === STPAULI_TEAM_ID
+  ? 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Fc_st_pauli_logo.svg'
+  : data.team1.teamIconUrl;
 	textLastGameIconTeam1.setAttribute("class", "img-icon-big");
 
 	let textLastGameIconTeam2 = document.getElementById(league + 'LastGameIconTeam2')
-	textLastGameIconTeam2.src = data['team2']['teamIconUrl'];
+	textLastGameIconTeam2.src = data.team2.teamId === STPAULI_TEAM_ID
+  ? 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Fc_st_pauli_logo.svg'
+  : data.team2.teamIconUrl;
 	textLastGameIconTeam2.setAttribute("class", "img-icon-big");
 	
 	textLastGame.innerHTML = data['leagueName'];
@@ -114,7 +122,9 @@ function printTable(data) {
 
 		let textPosition = document.createTextNode(helper);
 		let textLogo = document.createElement('img')
-		textLogo.src = data[key]['teamIconUrl']
+		textLogo.src = data[key].shortName === 'St. Pauli'
+		  ? 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Fc_st_pauli_logo.svg'
+		  : (data[key].teamIconUrl || '');
 		textLogo.setAttribute("class", "img-icon");
 		let textTeam = document.createTextNode(data[key]['shortName']);
 		let textMatches = document.createTextNode(data[key]['matches']);
@@ -258,7 +268,9 @@ async function getUpcomingPauliMatchdays() {
         const isHome = g.team1 && g.team1.teamId === STPAULI_TEAM_ID;
         const oppTeam = isHome ? (g.team2 || {}) : (g.team1 || {});
         const opp = oppTeam.teamName || 'Gegner';
-        const oppLogo = oppTeam.teamIconUrl || '';
+        const oppLogo = oppTeam.teamId === STPAULI_TEAM_ID
+			  ? 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Fc_st_pauli_logo.svg'
+			  : (oppTeam.teamIconUrl || '');
         const when = g.matchDateTime ? new Date(g.matchDateTime).toLocaleString('de-DE', {
           weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
         }) : '';
