@@ -16,23 +16,30 @@ function getSeason() {
 
 async function callApi(url) {
 	let response = await fetch(url);
-	let data = await response.json();
-	return data;
+	if (!response.ok) return null;
+	try {
+		return await response.json();
+	} catch (e) {
+		return null;
+	}
 }
 
 function triggerDfbPokal(data) {
+	if (!data || !data[0]) return;
 	dfbPokalId = data[0]['leagueId'];
 	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + dfbPokalId + '/' + STPAULI_TEAM_ID).then(data => printNextGame(data, 'dfb'))
 	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + dfbPokalId + '/' + STPAULI_TEAM_ID).then(data => printLastGame(data, 'dfb'))
 }
 
 function triggerBl2(data) {
+	if (!data || !data[0]) return;
 	bl2Id = data[0]['leagueId'];
 	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + bl2Id + '/' + STPAULI_TEAM_ID).then(data => printNextGame(data, 'bl2'))
 	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + bl2Id + '/' + STPAULI_TEAM_ID).then(data => printLastGame(data, 'bl2'))
 }
 
 function printNextGame(data, league) {
+	if (!data) return;
 	let textNextGame = document.getElementById(league + 'NextGame');
 	let textNextGameMatchday = document.getElementById(league + 'NextGameMatchday');
 	let textNextGameTeam1 = document.getElementById(league + 'NextGameTeam1');
@@ -59,6 +66,7 @@ function printNextGame(data, league) {
 }
 
 function printLastGame(data, league) {
+	if (!data) return;
 	let textLastGame = document.getElementById(league + 'LastGame');
 	let textLastGameMatchday = document.getElementById(league + 'LastGameMatchday');
 	let textLastGameTeam1 = document.getElementById(league + 'LastGameTeam1');
