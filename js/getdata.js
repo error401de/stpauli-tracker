@@ -2,8 +2,6 @@ let nextMatchdayBl2 = "";
 let nextMatchdayDfb = "";
 const STPAULI_TEAM_ID = 98;
 
-// Cache für alle kommenden St. Pauli Spieltage – wird einmal befüllt und von
-// ICS-Export und Modal gemeinsam genutzt.
 let upcomingMatchdaysCache = null;
 let upcomingMatchdaysCachePromise = null;
 
@@ -148,7 +146,6 @@ function printTable(data) {
 	}
 }
 
-// Prüft ob ein Spieltag terminiert ist (unterschiedliche Anstoßzeiten = geplant)
 function isScheduled(matchdayData) {
 	const times = matchdayData.map(m => m.matchDateTime);
 	return times.some(t => t !== times[0]);
@@ -158,8 +155,6 @@ function isFuture(dateStr) {
 	try { return new Date(dateStr) >= new Date(); } catch(e) { return false; }
 }
 
-// Lädt EINMAL alle kommenden St. Pauli Spieltage der Saison.
-// Ergebnis wird gecacht – weiterer Aufruf gibt sofort das Cache-Ergebnis zurück.
 async function loadUpcomingMatchdays() {
 	if (upcomingMatchdaysCache !== null) return upcomingMatchdaysCache;
 	if (upcomingMatchdaysCachePromise !== null) return upcomingMatchdaysCachePromise;
@@ -176,7 +171,6 @@ async function loadUpcomingMatchdays() {
 				const data = await callApi(`https://api.openligadb.de/getmatchdata/bl2/${season}/${md}`);
 				if (!Array.isArray(data) || data.length === 0) break;
 
-				// Nicht terminierter Spieltag = Saison-Ende oder noch keine Ansetzungen → abbrechen
 				if (!isScheduled(data)) break;
 
 				const pauliGames = data.filter(m =>
@@ -185,7 +179,6 @@ async function loadUpcomingMatchdays() {
 				);
 				if (!pauliGames.length) continue;
 
-				// Nur zukünftige Spiele sammeln
 				const futureGames = pauliGames.filter(g => isFuture(g.matchDateTime));
 				if (futureGames.length) {
 					result.push({ matchday: md, games: futureGames });
@@ -202,7 +195,6 @@ async function loadUpcomingMatchdays() {
 	return upcomingMatchdaysCachePromise;
 }
 
-// ICS-Export: nutzt den gemeinsamen Cache
 async function triggerIcs(league) {
 	if (league !== 'bl2') return;
 	const matchdays = await loadUpcomingMatchdays();
@@ -240,7 +232,6 @@ function generateIcs(matchdays) {
 	saveAs(blob, 'bl2.ics');
 }
 
-// Modal: nutzt denselben Cache
 function openNextMatchdaysModal() {
 	const modal = document.getElementById('nextMatchdaysModal');
 	if (!modal) return;
@@ -286,7 +277,6 @@ async function loadAndRenderPauliUpcomingMatchdays() {
 	}
 }
 
-// Initiale API-Calls
 callApi('https://api.openligadb.de/getbltable/bl2/' + getSeason()).then(data => printTable(data));
 callApi('https://api.openligadb.de/getmatchdata/dfb/').then(data => triggerDfbPokal(data));
 callApi('https://api.openligadb.de/getmatchdata/bl2').then(data => triggerBl2(data));
