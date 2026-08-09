@@ -14,33 +14,149 @@ function getSeason() {
 	return currentYear;
 }
 
+// Meldungstexte pro Wettbewerb (bl2/dfb), Box-Typ (Next/Last) und Zustand (loading/error/empty)
+const STATUS_MESSAGES = {
+	bl2: {
+		Next: {
+			loading: 'Lade nächstes Ligaspiel…',
+			error: 'Nächstes Ligaspiel konnte nicht geladen werden',
+			empty: 'Kein bevorstehendes Ligaspiel'
+		},
+		Last: {
+			loading: 'Lade letztes Ligaspiel…',
+			error: 'Letztes Ligaspiel konnte nicht geladen werden',
+			empty: 'Noch kein Ligaspiel gespielt'
+		}
+	},
+	dfb: {
+		Next: {
+			loading: 'Lade nächstes Pokalspiel…',
+			error: 'Nächstes Pokalspiel konnte nicht geladen werden',
+			empty: 'Kein bevorstehendes Pokalspiel'
+		},
+		Last: {
+			loading: 'Lade letztes Pokalspiel…',
+			error: 'Letztes Pokalspiel konnte nicht geladen werden',
+			empty: 'Noch kein Pokalspiel gespielt'
+		}
+	}
+};
+
+// Liefert { status: 'ok', data } bei Erfolg mit Inhalt,
+// { status: 'empty' } bei Erfolg ohne Inhalt (API hat bewusst nichts geliefert),
+// { status: 'error' } bei Netzwerk-/HTTP-/Parse-Fehlern.
 async function callApi(url) {
-	let response = await fetch(url);
-	if (!response.ok) return null;
+	let response;
 	try {
-		return await response.json();
+		response = await fetch(url);
 	} catch (e) {
-		return null;
+		return { status: 'error' };
+	}
+
+	// 404 heißt bei dieser API i.d.R. "nichts gefunden" (z.B. noch kein Spiel
+	// gespielt), nicht ein echter Fehler - also als "keine Daten" werten.
+	if (response.status === 404) return { status: 'empty' };
+	if (!response.ok) return { status: 'error' };
+
+	let text;
+	try {
+		text = await response.text();
+	} catch (e) {
+		return { status: 'error' };
+	}
+
+	// Die API antwortet gelegentlich mit HTTP 200 und leerem Body (z.B. wenn es
+	// noch kein Spiel gibt). Das ist kein Fehler, sondern "keine Daten".
+	if (text.trim() === '') return { status: 'empty' };
+
+	let json;
+	try {
+		json = JSON.parse(text);
+	} catch (e) {
+		return { status: 'error' };
+	}
+
+	if (json === null || json === undefined || (Array.isArray(json) && json.length === 0)) {
+		return { status: 'empty' };
+	}
+	return { status: 'ok', data: json };
+}
+
+// Zeigt eine Status-Meldung (Laden/Fehler/keine Daten) anstelle von Team-Icons, Team-Namen und Datum an.
+function setGameStatus(league, type, status) {
+	const messages = STATUS_MESSAGES[league] && STATUS_MESSAGES[league][type];
+	const message = (messages && messages[status]) || '';
+
+	const icons = document.getElementById(league + type + 'GameIcons');
+	const teams = document.getElementById(league + type + 'GameTeams');
+	const matchday = document.getElementById(league + type + 'GameMatchday');
+
+	if (icons) icons.classList.add('game-hidden');
+	if (teams) teams.classList.add('game-hidden');
+
+	if (matchday) {
+		matchday.textContent = message;
+		matchday.classList.remove('game-hidden', 'game-status-error', 'game-status-loading');
+		if (status === 'error') matchday.classList.add('game-status-error');
+		if (status === 'loading') matchday.classList.add('game-status-loading');
+	}
+
+	if (type === 'Last') {
+		const points = document.getElementById(league + type + 'GamePoints');
+		if (points) points.textContent = '';
 	}
 }
 
-function triggerDfbPokal(data) {
-	if (!data || !data[0]) return;
-	dfbPokalId = data[0]['leagueId'];
-	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + dfbPokalId + '/' + STPAULI_TEAM_ID).then(data => printNextGame(data, 'dfb'));
-	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + dfbPokalId + '/' + STPAULI_TEAM_ID).then(data => printLastGame(data, 'dfb'));
+// Blendet Icons/Team-Zeile wieder ein und entfernt Status-Styling, sobald echte Daten vorliegen.
+function clearGameStatus(league, type) {
+	const icons = document.getElementById(league + type + 'GameIcons');
+	const teams = document.getElementById(league + type + 'GameTeams');
+	const matchday = document.getElementById(league + type + 'GameMatchday');
+
+	if (icons) icons.classList.remove('game-hidden');
+	if (teams) teams.classList.remove('game-hidden');
+	if (matchday) matchday.classList.remove('game-hidden', 'game-status-error', 'game-status-loading');
 }
 
-function triggerBl2(data) {
-	if (!data || !data[0]) return;
-	bl2Id = data[0]['leagueId'];
-	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + bl2Id + '/' + STPAULI_TEAM_ID).then(data => printNextGame(data, 'bl2'));
-	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + bl2Id + '/' + STPAULI_TEAM_ID).then(data => printLastGame(data, 'bl2'));
+function triggerDfbPokal(result) {
+	if (result.status === 'error') {
+		setGameStatus('dfb', 'Next', 'error');
+		setGameStatus('dfb', 'Last', 'error');
+		return;
+	}
+	if (result.status === 'empty') {
+		setGameStatus('dfb', 'Next', 'empty');
+		setGameStatus('dfb', 'Last', 'empty');
+		return;
+	}
+	dfbPokalId = result.data[0]['leagueId'];
+	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + dfbPokalId + '/' + STPAULI_TEAM_ID).then(res => printNextGame(res, 'dfb'));
+	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + dfbPokalId + '/' + STPAULI_TEAM_ID).then(res => printLastGame(res, 'dfb'));
 }
 
-function printNextGame(data, league) {
-	if (!data) return;
-	let textNextGame = document.getElementById(league + 'NextGame');
+function triggerBl2(result) {
+	if (result.status === 'error') {
+		setGameStatus('bl2', 'Next', 'error');
+		setGameStatus('bl2', 'Last', 'error');
+		return;
+	}
+	if (result.status === 'empty') {
+		setGameStatus('bl2', 'Next', 'empty');
+		setGameStatus('bl2', 'Last', 'empty');
+		return;
+	}
+	bl2Id = result.data[0]['leagueId'];
+	callApi('https://api.openligadb.de/getnextmatchbyleagueteam/' + bl2Id + '/' + STPAULI_TEAM_ID).then(res => printNextGame(res, 'bl2'));
+	callApi('https://api.openligadb.de/getlastmatchbyleagueteam/' + bl2Id + '/' + STPAULI_TEAM_ID).then(res => printLastGame(res, 'bl2'));
+}
+
+function printNextGame(result, league) {
+	if (result.status === 'error') return setGameStatus(league, 'Next', 'error');
+	if (result.status === 'empty') return setGameStatus(league, 'Next', 'empty');
+
+	const data = result.data;
+	clearGameStatus(league, 'Next');
+
 	let textNextGameMatchday = document.getElementById(league + 'NextGameMatchday');
 	let textNextGameTeam1 = document.getElementById(league + 'NextGameTeam1');
 	let textNextGameTeam2 = document.getElementById(league + 'NextGameTeam2');
@@ -53,7 +169,6 @@ function printNextGame(data, league) {
 	textNextGameIconTeam2.src = data['team2']['teamIconUrl'];
 	textNextGameIconTeam2.setAttribute("class", "img-icon-big");
 
-	textNextGame.innerHTML = data['leagueName'];
 	textNextGameMatchday.innerHTML = data['group']['groupName'] + ' - ' + new Date(data['matchDateTime']).toLocaleString('de-DE', { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
 	textNextGameTeam1.innerHTML = data['team1']['shortName'];
 	textNextGameTeam2.innerHTML = data['team2']['shortName'];
@@ -65,9 +180,13 @@ function printNextGame(data, league) {
 	}
 }
 
-function printLastGame(data, league) {
-	if (!data) return;
-	let textLastGame = document.getElementById(league + 'LastGame');
+function printLastGame(result, league) {
+	if (result.status === 'error') return setGameStatus(league, 'Last', 'error');
+	if (result.status === 'empty') return setGameStatus(league, 'Last', 'empty');
+
+	const data = result.data;
+	clearGameStatus(league, 'Last');
+
 	let textLastGameMatchday = document.getElementById(league + 'LastGameMatchday');
 	let textLastGameTeam1 = document.getElementById(league + 'LastGameTeam1');
 	let textLastGameTeam2 = document.getElementById(league + 'LastGameTeam2');
@@ -81,7 +200,6 @@ function printLastGame(data, league) {
 	textLastGameIconTeam2.src = data['team2']['teamIconUrl'];
 	textLastGameIconTeam2.setAttribute("class", "img-icon-big");
 
-	textLastGame.innerHTML = data['leagueName'];
 	textLastGameMatchday.innerHTML = data['group']['groupName'] + ' - ' + new Date(data['matchDateTime']).toLocaleString('de-DE', { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
 	textLastGameTeam1.innerHTML = data['team1']['shortName'];
 	textLastGameTeam2.innerHTML = data['team2']['shortName'];
@@ -93,9 +211,20 @@ function printLastGame(data, league) {
 	}
 }
 
-function printTable(data) {
-	if (!data) return;
+function printTable(result) {
 	let table = document.getElementById('leagueTable');
+
+	if (result.status === 'error' || result.status === 'empty') {
+		let row = table.insertRow(1);
+		let cell = row.insertCell(-1);
+		cell.colSpan = 7;
+		cell.textContent = result.status === 'error'
+			? 'Tabelle konnte nicht geladen werden'
+			: 'Tabelle noch nicht verfügbar';
+		return;
+	}
+
+	const data = result.data;
 	let helper = 1;
 	for (let key in data) {
 		let newRow = table.insertRow(helper);
@@ -168,8 +297,9 @@ async function loadUpcomingMatchdays() {
 		const result = [];
 		for (let md = startMd; md <= 34; md++) {
 			try {
-				const data = await callApi(`https://api.openligadb.de/getmatchdata/bl2/${season}/${md}`);
-				if (!Array.isArray(data) || data.length === 0) break;
+				const res = await callApi(`https://api.openligadb.de/getmatchdata/bl2/${season}/${md}`);
+				if (res.status !== 'ok' || !Array.isArray(res.data) || res.data.length === 0) break;
+				const data = res.data;
 
 				if (!isScheduled(data)) break;
 
@@ -277,6 +407,11 @@ async function loadAndRenderPauliUpcomingMatchdays() {
 	}
 }
 
-callApi('https://api.openligadb.de/getbltable/bl2/' + getSeason()).then(data => printTable(data));
-callApi('https://api.openligadb.de/getmatchdata/dfb/').then(data => triggerDfbPokal(data));
-callApi('https://api.openligadb.de/getmatchdata/bl2').then(data => triggerBl2(data));
+setGameStatus('bl2', 'Next', 'loading');
+setGameStatus('bl2', 'Last', 'loading');
+setGameStatus('dfb', 'Next', 'loading');
+setGameStatus('dfb', 'Last', 'loading');
+
+callApi('https://api.openligadb.de/getbltable/bl2/' + getSeason()).then(result => printTable(result));
+callApi('https://api.openligadb.de/getmatchdata/dfb/').then(result => triggerDfbPokal(result));
+callApi('https://api.openligadb.de/getmatchdata/bl2').then(result => triggerBl2(result));
