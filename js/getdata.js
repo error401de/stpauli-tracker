@@ -220,12 +220,10 @@ function printTable(result) {
 		let newRow = table.insertRow(helper);
 		let newCellPosition = newRow.insertCell(-1);
 
-		if (helper >= 1 && helper <= 4) {
-			newCellPosition.setAttribute("class", "table-cl");
-		} else if (helper === 5) {
-			newCellPosition.setAttribute("class", "table-el");
-		} else if (helper === 6) {
-			newCellPosition.setAttribute("class", "table-elq");
+		if (helper >= 1 && helper <= 2) {
+			newCellPosition.setAttribute("class", "table-up");
+		} else if (helper === 3) {
+			newCellPosition.setAttribute("class", "table-rel-up");
 		} else if (helper === 16) {
 			newCellPosition.setAttribute("class", "table-rel");
 		} else if (helper >= 17) {
