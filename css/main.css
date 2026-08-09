@@ -150,6 +150,18 @@ td {
   margin-bottom: 48px;
 }
 
+.game-hidden {
+  display: none !important;
+}
+
+.game-status-error {
+  color: #b3261e;
+}
+
+.game-status-loading {
+  color: #666;
+}
+
 .stpauli-highlight {
   background-color: #ec1b24;
   font-weight: 700;
