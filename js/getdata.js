@@ -14,7 +14,6 @@ function getSeason() {
 	return currentYear;
 }
 
-// Meldungstexte pro Wettbewerb (bl2/dfb), Box-Typ (Next/Last) und Zustand (loading/error/empty)
 const STATUS_MESSAGES = {
 	bl2: {
 		Next: {
@@ -42,9 +41,6 @@ const STATUS_MESSAGES = {
 	}
 };
 
-// Liefert { status: 'ok', data } bei Erfolg mit Inhalt,
-// { status: 'empty' } bei Erfolg ohne Inhalt (API hat bewusst nichts geliefert),
-// { status: 'error' } bei Netzwerk-/HTTP-/Parse-Fehlern.
 async function callApi(url) {
 	let response;
 	try {
@@ -53,8 +49,6 @@ async function callApi(url) {
 		return { status: 'error' };
 	}
 
-	// 404 heißt bei dieser API i.d.R. "nichts gefunden" (z.B. noch kein Spiel
-	// gespielt), nicht ein echter Fehler - also als "keine Daten" werten.
 	if (response.status === 404) return { status: 'empty' };
 	if (!response.ok) return { status: 'error' };
 
@@ -65,8 +59,6 @@ async function callApi(url) {
 		return { status: 'error' };
 	}
 
-	// Die API antwortet gelegentlich mit HTTP 200 und leerem Body (z.B. wenn es
-	// noch kein Spiel gibt). Das ist kein Fehler, sondern "keine Daten".
 	if (text.trim() === '') return { status: 'empty' };
 
 	let json;
@@ -82,7 +74,6 @@ async function callApi(url) {
 	return { status: 'ok', data: json };
 }
 
-// Zeigt eine Status-Meldung (Laden/Fehler/keine Daten) anstelle von Team-Icons, Team-Namen und Datum an.
 function setGameStatus(league, type, status) {
 	const messages = STATUS_MESSAGES[league] && STATUS_MESSAGES[league][type];
 	const message = (messages && messages[status]) || '';
@@ -107,7 +98,6 @@ function setGameStatus(league, type, status) {
 	}
 }
 
-// Blendet Icons/Team-Zeile wieder ein und entfernt Status-Styling, sobald echte Daten vorliegen.
 function clearGameStatus(league, type) {
 	const icons = document.getElementById(league + type + 'GameIcons');
 	const teams = document.getElementById(league + type + 'GameTeams');
