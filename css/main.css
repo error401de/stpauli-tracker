@@ -168,16 +168,12 @@ td {
   color: #fff;
 }
 
-.table-cl {
+.table-up {
   border-left: 2px solid green;
 }
 
-.table-el {
-  border-left: 2px solid royalblue;
-}
-
-.table-elq {
-  border-left: 2px solid lightblue;
+.table-rel-up {
+  border-left: 2px solid lightgreen;
 }
 
 .table-rel {
